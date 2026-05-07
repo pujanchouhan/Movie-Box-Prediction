@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Success Prediction System</title>
+    <meta name="description" content="Predict movie box office revenue and success using ML regression models">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- Navigation -->
+    <nav id="main-nav">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <span class="nav-icon">🎬</span>
+                <div>
+                    <span class="nav-title">Movie Success Predictor</span>
+                    <span class="nav-sub">ML-Powered Revenue Prediction</span>
+                </div>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-page="predict" id="tab-predict">
+                    <span class="tab-icon">🎯</span> Predict
+                </button>
+                <button class="nav-tab" data-page="results" id="tab-results" disabled>
+                    <span class="tab-icon">📊</span> Results
+                </button>
+                <a class="nav-tab nav-link-tab" href="/dashboard/" target="_blank" id="tab-dashboard">
+                    <span class="tab-icon">📈</span> Analytics
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════ PAGE: PREDICTION FORM ═══════════════════ -->
+    <main id="page-predict" class="page active">
+        <section class="hero-section">
+            <h1 class="hero-title">Predict Your Movie's Success</h1>
+            <p class="hero-subtitle">Enter movie details below and our ML model will predict box office revenue, profit, and classify the movie as a Blockbuster, Hit, Average, or Flop.</p>
+        </section>
+
+        <section class="form-section">
+            <form id="predict-form" autocomplete="off">
+                <div class="form-grid">
+                    <!-- Movie Title -->
+                    <div class="form-group full-width">
+                        <label for="movie_title">Movie Title</label>
+                        <input type="text" id="movie_title" name="movie_title" placeholder="e.g. The Next Blockbuster" required>
+                    </div>
+
+                    <!-- Budget -->
+                    <div class="form-group">
+                        <label for="budget">Budget ($)</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">💰</span>
+                            <input type="number" id="budget" name="budget" placeholder="100000000" min="10000" max="500000000" required>
+                        </div>
+                        <span class="form-hint" id="budget-hint">Enter production budget</span>
+                    </div>
+
+                    <!-- Genre -->
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">🎭</span>
+                            <select id="genre" name="genre" required>
+                                <option value="" disabled selected>Select genre</option>
+                                <option value="Action">Action</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Animation">Animation</option>
+                                <option value="Comedy">Comedy</option>
+                                <option value="Crime">Crime</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Horror">Horror</option>
+                                <option value="Mystery">Mystery</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Sci-Fi">Sci-Fi</option>
+                                <option value="Thriller">Thriller</option>
+                                <option value="Family">Family</option>
+                                <option value="Biography">Biography</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Runtime -->
+                    <div class="form-group">
+                        <label for="runtime">Runtime (minutes)</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">⏱️</span>
+                            <input type="number" id="runtime" name="runtime" placeholder="120" min="30" max="300" value="120" required>
+                        </div>
+                    </div>
+
+                    <!-- Release Month -->
+                    <div class="form-group">
+                        <label for="release_month">Release Month</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">📅</span>
+                            <select id="release_month" name="release_month" required>
+                                <option value="" disabled selected>Select month</option>
+                                <option value="Jan">January</option>
+                                <option value="Feb">February</option>
+                                <option value="Mar">March</option>
+                                <option value="Apr">April</option>
+                                <option value="May">May</option>
+                                <option value="Jun">June</option>
+                                <option value="Jul">July</option>
+                                <option value="Aug">August</option>
+                                <option value="Sep">September</option>
+                                <option value="Oct">October</option>
+                                <option value="Nov">November</option>
+                                <option value="Dec">December</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- IMDB Rating -->
+                    <div class="form-group">
+                        <label for="imdb_rating">Expected IMDB Rating</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">⭐</span>
+                            <input type="number" id="imdb_rating" name="imdb_rating" placeholder="7.5" min="1" max="10" step="0.1" value="7.0" required>
+                        </div>
+                    </div>
+
+                    <!-- Cast Popularity Slider -->
+                    <div class="form-group">
+                        <label for="cast_popularity">Cast Popularity</label>
+                        <div class="slider-group">
+                            <input type="range" id="cast_popularity" name="cast_popularity" min="1" max="10" value="5" class="slider">
+                            <div class="slider-labels">
+                                <span>Unknown</span>
+                                <span class="slider-value" id="cast_val">5</span>
+                                <span>A-List</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Director Score Slider -->
+                    <div class="form-group">
+                        <label for="director_score">Director Score</label>
+                        <div class="slider-group">
+                            <input type="range" id="director_score" name="director_score" min="1" max="10" value="5" class="slider">
+                            <div class="slider-labels">
+                                <span>Debut</span>
+                                <span class="slider-value" id="dir_val">5</span>
+                                <span>Legendary</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="predict-btn" id="predict-btn">
+                    <span class="btn-text">🚀 Predict Movie Success</span>
+                    <span class="btn-loading" style="display:none;">
+                        <span class="spinner"></span> Analyzing...
+                    </span>
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <!-- ═══════════════════ PAGE: RESULTS ═══════════════════ -->
+    <main id="page-results" class="page">
+        <section class="results-header">
+            <button class="back-btn" id="back-btn">← Back to Prediction</button>
+            <h2 class="results-title" id="results-movie-title">Results for "Movie"</h2>
+        </section>
+
+        <!-- Verdict Banner -->
+        <section class="verdict-banner" id="verdict-banner">
+            <div class="verdict-inner">
+                <div class="verdict-emoji" id="verdict-emoji">🎬</div>
+                <div class="verdict-text" id="verdict-text">Blockbuster</div>
+                <div class="verdict-confidence">
+                    Confidence: <span id="verdict-confidence">85</span>%
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="results-kpis">
+            <div class="result-card card-revenue">
+                <div class="rc-icon">💵</div>
+                <div class="rc-value" id="res-revenue">$0</div>
+                <div class="rc-label">Predicted Revenue</div>
+            </div>
+            <div class="result-card card-budget">
+                <div class="rc-icon">💰</div>
+                <div class="rc-value" id="res-budget">$0</div>
+                <div class="rc-label">Budget</div>
+            </div>
+            <div class="result-card card-profit" id="card-profit">
+                <div class="rc-icon">📈</div>
+                <div class="rc-value" id="res-profit">$0</div>
+                <div class="rc-label">Estimated Profit</div>
+            </div>
+            <div class="result-card card-roi">
+                <div class="rc-icon">🎯</div>
+                <div class="rc-value" id="res-roi">0%</div>
+                <div class="rc-label">ROI</div>
+            </div>
+        </section>
+
+        <!-- Charts Row -->
+        <section class="results-charts">
+            <div class="chart-card">
+                <h3>Budget vs Predicted Revenue</h3>
+                <div class="chart-container"><canvas id="chart-budget-rev"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Revenue Breakdown</h3>
+                <div class="chart-container"><canvas id="chart-breakdown"></canvas></div>
+            </div>
+        </section>
+
+        <!-- Feature Impact -->
+        <section class="impact-section">
+            <h3>⚡ Key Factors Influencing This Prediction</h3>
+            <div class="impact-grid" id="impact-grid"></div>
+        </section>
+
+        <!-- Model Info -->
+        <section class="model-info">
+            <div class="model-badge">
+                <span>🤖 Model: HistGradientBoosting (Tuned)</span>
+                <span>R² = <span id="model-r2">0.676</span></span>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

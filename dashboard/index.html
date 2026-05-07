@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Box Office Prediction — ML Dashboard</title>
+    <meta name="description" content="Interactive dashboard for Movie Box Office Revenue Prediction using Regression and Feature Engineering">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon">🎬</div>
+                <div>
+                    <h1>Movie Revenue Predictor</h1>
+                    <p class="subtitle">ML Dashboard · Regression & Feature Engineering</p>
+                </div>
+            </div>
+            <div class="header-badge">
+                <span class="badge-dot"></span>
+                <span>Models Trained</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- KPI Cards -->
+    <section id="kpi-section" class="section">
+        <div class="kpi-grid">
+            <div class="kpi-card" id="kpi-r2">
+                <div class="kpi-icon">🏆</div>
+                <div class="kpi-value" id="kpi-r2-val">—</div>
+                <div class="kpi-label">Best R² Score</div>
+                <div class="kpi-sub" id="kpi-best-model">—</div>
+            </div>
+            <div class="kpi-card" id="kpi-mae">
+                <div class="kpi-icon">📉</div>
+                <div class="kpi-value" id="kpi-mae-val">—</div>
+                <div class="kpi-label">Best MAE</div>
+                <div class="kpi-sub">Mean Absolute Error</div>
+            </div>
+            <div class="kpi-card" id="kpi-models">
+                <div class="kpi-icon">🤖</div>
+                <div class="kpi-value" id="kpi-models-val">—</div>
+                <div class="kpi-label">Models Compared</div>
+                <div class="kpi-sub">With Cross-Validation</div>
+            </div>
+            <div class="kpi-card" id="kpi-features">
+                <div class="kpi-icon">🔧</div>
+                <div class="kpi-value" id="kpi-features-val">—</div>
+                <div class="kpi-label">Features Engineered</div>
+                <div class="kpi-sub" id="kpi-rows-val">—</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Comparison -->
+    <section class="section">
+        <div class="section-header">
+            <h2>📊 Model Performance Comparison</h2>
+            <p>R² score and RMSE across all trained models</p>
+        </div>
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3>R² Score (Higher is Better)</h3>
+                <div class="chart-wrap"><canvas id="chart-r2"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>RMSE in Millions $ (Lower is Better)</h3>
+                <div class="chart-wrap"><canvas id="chart-rmse"></canvas></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cross Validation -->
+    <section class="section">
+        <div class="section-header">
+            <h2>🔄 5-Fold Cross-Validation</h2>
+            <p>Robustness check — mean R² with standard deviation error bars</p>
+        </div>
+        <div class="chart-card full-width">
+            <div class="chart-wrap"><canvas id="chart-cv"></canvas></div>
+        </div>
+    </section>
+
+    <!-- Actual vs Predicted + Residuals -->
+    <section class="section">
+        <div class="section-header">
+            <h2>🎯 Prediction Analysis</h2>
+            <p>Best model's actual vs predicted values and residual distribution</p>
+        </div>
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3>Actual vs Predicted Revenue</h3>
+                <div class="chart-wrap"><canvas id="chart-scatter"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Residual Distribution</h3>
+                <div class="chart-wrap"><canvas id="chart-residuals"></canvas></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Importance -->
+    <section class="section">
+        <div class="section-header">
+            <h2>⚡ Feature Importance</h2>
+            <p>Top features driving box office revenue predictions</p>
+        </div>
+        <div class="chart-card full-width">
+            <div class="chart-wrap chart-tall"><canvas id="chart-features"></canvas></div>
+        </div>
+    </section>
+
+    <!-- Results Table -->
+    <section class="section">
+        <div class="section-header">
+            <h2>📋 Detailed Results</h2>
+            <p>Complete evaluation metrics for every model</p>
+        </div>
+        <div class="table-card">
+            <div class="table-wrap">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Model</th>
+                            <th>R² Score</th>
+                            <th>CV R² (mean±std)</th>
+                            <th>MAE ($M)</th>
+                            <th>RMSE ($M)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Model Params -->
+    <section class="section">
+        <div class="section-header">
+            <h2>⚙️ Best Model — Tuned Hyperparameters</h2>
+            <p>GridSearchCV optimised parameters</p>
+        </div>
+        <div class="params-grid" id="params-grid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Movie Box Office Prediction · Built with Python, Scikit-learn, XGBoost & Chart.js</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
